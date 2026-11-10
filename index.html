@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Akademik & Ujian Sekolah</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* === DESAIN ESTETIK & PROFESIONAL === */
+        :root {
+            --primary: #1A365D;
+            --secondary: #2B6CB0;
+            --accent: #E2E8F0;
+            --danger: #E53E3E;
+            --success: #38A169;
+            --bg: #F7FAFC;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        /* Layout */
+        .container { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            display: none; /* Sembunyikan sebelum login */
+        }
+        .sidebar h2 { text-align: center; border-bottom: 1px solid var(--secondary); padding-bottom: 10px; }
+        .sidebar button {
+            width: 100%; padding: 12px; margin: 8px 0; background: var(--secondary);
+            border: none; color: white; border-radius: 5px; cursor: pointer; text-align: left;
+            font-size: 15px; transition: 0.3s;
+        }
+        .sidebar button:hover { background: #2C5282; }
+        .main-content { flex: 1; padding: 30px; display: none; }
+        
+        /* Section styling */
+        .section { display: none; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .section.active { display: block; }
+        h3 { color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        
+        /* Login Form */
+        #login-page {
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+        }
+        .login-box {
+            background: white; padding: 40px; border-radius: 10px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); width: 350px;
+        }
+        input, select {
+            width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #CBD5E0; border-radius: 5px; box-sizing: border-box;
+        }
+        .btn-primary { background: var(--secondary); color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; }
+        .btn-danger { background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+        .btn-success { background: var(--success); color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+        
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid var(--accent); padding: 12px; text-align: left; }
+        th { background-color: var(--primary); color: white; }
+        
+        /* Scanner Box */
+        .scanner-box { border: 2px dashed var(--secondary); height: 200px; display: flex; justify-content: center; align-items: center; background: #EDF2F7; margin-bottom: 15px; }
+        
+        /* Ujian */
+        .timer-box { font-size: 20px; font-weight: bold; color: var(--danger); text-align: right; }
+        .soal-box { margin-bottom: 20px; padding: 15px; background: #F7FAFC; border-radius: 8px; border: 1px solid var(--accent); }
+    </style>
+</head>
+<body>
+
+    <!-- ================= 1. HALAMAN LOGIN ================= -->
+    <div id="login-page">
+        <div class="login-box">
+            <h2 style="text-align:center; color:#1A365D;">PORTAL SEKOLAH</h2>
+            <label>Login Sebagai:</label>
+            <select id="role-select">
+                <option value="siswa">Siswa</option>
+                <option value="guru">Guru</option>
+            </select>
+            <input type="text" id="username" placeholder="Username / NIS / NIP">
+            <input type="password" id="password" placeholder="Password">
+            <button class="btn-primary" onclick="doLogin()">MASUK</button>
+        </div>
+    </div>
+
+    <!-- ================= DASHBOARD UTAMA ================= -->
+    <div class="container">
+        <!-- SIDEBAR MENU -->
+        <div class="sidebar" id="sidebar">
+            <h2>MENU <span id="user-role-label"></span></h2>
+            <button onclick="showSection('jadwal')">📅 Jadwal (Roster)</button>
+            <button onclick="showSection('scan')">📷 Scan Kehadiran</button>
+            <button onclick="showSection('materi')">📚 Materi Pelajaran</button>
+            <button onclick="showSection('ujian')">📝 Ujian Sekolah</button>
+            <button onclick="logout()" style="background:var(--danger); margin-top:50px;">🚪 Keluar (Logout)</button>
+        </div>
+
+        <!-- AREA KONTEN -->
+        <div class="main-content" id="main-content">
+            
+            <!-- 2 & 4. JADWAL UJIAN & MAPEL LES 1-10 -->
+            <div id="jadwal" class="section">
+                <h3>Jadwal Pelajaran & Ujian</h3>
+                <p><i>Referensi Data: <b>roster tp 2026-2027 akl.xlsx</b></i></p>
+                <table>
+                    <tr>
+                        <th>Hari</th>
+                        <th>Les 1-2</th>
+                        <th>Les 3-4</th>
+                        <th>Istirahat</th>
+                        <th>Les 5-6</th>
+                        <th>Les 7-8</th>
+                        <th>Les 9-10</th>
+                    </tr>
+                    <!-- ISI DATA KOSONG UNTUK ANDA ISI -->
+                    <tr>
+                        <td>Senin</td>
+                        <td>[Isi Mapel/Ujian]</td>
+                        <td>[Isi Mapel/Ujian]</td>
+                        <td>[Istirahat]</td>
+                        <td>[Isi Mapel/Ujian]</td>
+                        <td>[Isi Mapel/Ujian]</td>
+                        <td>[Isi Mapel/Ujian]</td>
+                    </tr>
+                    <tr>
+                        <td>Selasa</td>
+                        <td>[Isi Mapel/Ujian]</td>
+                        <td>[Isi Mapel/Ujian]</td>
+                        <td>[Istirahat]</td>
+                        <td>[Isi Mapel/Ujian]</td>
+                        <td>[Isi Mapel/Ujian]</td>
+                        <td>[Isi Mapel/Ujian]</td>
+                    </tr>
+                    <!-- Tambah hari lain di sini -->
+                </table>
+            </div>
+
+            <!-- 3. SCAN KEHADIRAN -->
+            <div id="scan" class="section">
+                <h3>Scan Kehadiran Harian & Pengawas/Peserta Ujian</h3>
+                <div class="scanner-box">
+                    <p>[ Area Kamera / Scanner Barcode & QR Code ]</p>
+                </div>
+                <button class="btn-primary" onclick="alert('Berhasil melakukan scan kehadiran!')">Aktifkan Kamera & Scan</button>
+            </div>
+
+            <!-- 5. MATERI GURU (Upload & Tampil) -->
+            <div id="materi" class="section">
+                <h3>Materi Pelajaran</h3>
+                <!-- Fitur Guru: Tombol Tambah -->
+                <div id="guru-materi-controls" style="display:none; margin-bottom:15px;">
+                    <input type="file" id="file-upload">
+                    <button class="btn-success">Upload Materi Baru</button>
+                </div>
+                <table>
+                    <tr>
+                        <th>Judul Materi</th>
+                        <th>Jenis File</th>
+                        <th>Aksi</th>
+                    </tr>
+                    <tr>
+                        <td>[Isi Judul Materi 1]</td>
+                        <td>[Word/Excel/PPT/Video/Gambar]</td>
+                        <td>
+                            <button class="btn-success">Save / Download</button>
+                            <!-- Tombol ini hanya tampil untuk guru via JS nanti jika ingin dikembangkan -->
+                            <button class="btn-primary guru-only">Edit</button>
+                            <button class="btn-danger guru-only">Hapus</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- 6 & 7 & 8. UJIAN SEKOLAH -->
+            <div id="ujian" class="section">
+                <h3>Ujian Berlangsung</h3>
+                
+                <div id="ujian-start-area">
+                    <p>Ujian: <b>[Nama Ujian / Mata Pelajaran]</b></p>
+                    <p>Waktu: <b>[Set Waktu, misal: 60 Menit]</b></p>
+                    <button class="btn-primary" onclick="mulaiUjian()">Mulai Kerjakan Soal</button>
+                </div>
+
+                <div id="ujian-active-area" style="display:none;">
+                    <div class="timer-box">Sisa Waktu: <span id="timer">60:00</span></div>
+                    <p style="color:red; font-size:12px;">*Sistem Anti-Curang Aktif. Dilarang Screenshot, Rekam Layar, atau Pindah Tab / Ke HOME.</p>
+                    
+                    <form id="form-ujian">
+                        <!-- SOAL PILIHAN GANDA -->
+                        <div class="soal-box">
+                            <p>1. [Isi Soal Pilihan Ganda 1]</p>
+                            <input type="radio" name="soal1" value="A"> A. [Pilihan A]<br>
+                            <input type="radio" name="soal1" value="B"> B. [Pilihan B]<br>
+                            <input type="radio" name="soal1" value="C"> C. [Pilihan C]<br>
+                        </div>
+                        <div class="soal-box">
+                            <p>2. [Isi Soal Pilihan Ganda 2]</p>
+                            <input type="radio" name="soal2" value="A"> A. [Pilihan A]<br>
+                            <input type="radio" name="soal2" value="B"> B. [Pilihan B]<br>
+                            <input type="radio" name="soal2" value="C"> C. [Pilihan C]<br>
+                        </div>
+                        <div class="soal-box">
+                            <p>3. [Isi Soal Pilihan Ganda 3]</p>
+                            <input type="radio" name="soal3" value="A"> A. [Pilihan A]<br>
+                            <input type="radio" name="soal3" value="B"> B. [Pilihan B]<br>
+                            <input type="radio" name="soal3" value="C"> C. [Pilihan C]<br>
+                        </div>
+                        <!-- SOAL ISIAN -->
+                        <div class="soal-box">
+                            <p>4. [Isi Soal Essay / Isian Singkat]</p>
+                            <textarea name="soal4" rows="3" style="width:100%;"></textarea>
+                        </div>
+                        
+                        <button type="button" class="btn-success" onclick="simpanJawaban()">SIMPAN JAWABAN & SELESAI</button>
+                    </form>
+                </div>
+
+                <!-- 8. LAPORAN NILAI OTOMATIS -->
+                <div id="laporan-area" style="display:none; text-align:center; padding:30px;">
+                    <h2 style="color:var(--primary)">Ujian Selesai!</h2>
+                    <h3>Laporan Otomatis</h3>
+                    <p>Total Soal: 4</p>
+                    <p style="color:var(--success); font-weight:bold;">Benar: <span id="jawaban-benar">0</span></p>
+                    <p style="color:var(--danger); font-weight:bold;">Salah: <span id="jawaban-salah">0</span></p>
+                    <h1 style="font-size:50px; color:var(--primary);">NILAI: <span id="nilai-akhir">0</span> / 100</h1>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT LENGKAP ================= -->
+    <script>
+        let currentRole = '';
+        let statusUjianAktif = false;
+        let waktuUjian;
+
+        // 1. Fungsi Login Sederhana
+        function doLogin() {
+            currentRole = document.getElementById('role-select').value;
+            
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('sidebar').style.display = 'block';
+            document.getElementById('main-content').style.display = 'block';
+            document.getElementById('user-role-label').innerText = currentRole.toUpperCase();
+
+            // Atur tampilan tombol guru/siswa di menu Materi
+            const guruControls = document.querySelectorAll('.guru-only');
+            const uploadBox = document.getElementById('guru-materi-controls');
+            if(currentRole === 'guru') {
+                guruControls.forEach(el => el.style.display = 'inline-block');
+                uploadBox.style.display = 'block';
+            } else {
+                guruControls.forEach(el => el.style.display = 'none');
+                uploadBox.style.display = 'none';
+            }
+
+            showSection('jadwal');
+        }
+
+        // Fungsi Logout
+        function logout() {
+            if(statusUjianAktif) {
+                alert("Selesaikan ujian terlebih dahulu!");
+                return;
+            }
+            location.reload(); // Refresh halaman kembali ke login
+        }
+
+        // Fungsi Navigasi Menu
+        function showSection(id) {
+            if(statusUjianAktif && id !== 'ujian') {
+                alert("DILARANG KEMBALI KE HOME / MENU LAIN SAAT UJIAN BERLANGSUNG!");
+                bunyiPeringatan();
+                return;
+            }
+
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(sec => sec.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // ================= FITUR UJIAN & ANTI-CURANG =================
+
+        // 6. Mulai Ujian & Timer
+        function mulaiUjian() {
+            document.getElementById('ujian-start-area').style.display = 'none';
+            document.getElementById('ujian-active-area').style.display = 'block';
+            statusUjianAktif = true;
+
+            // Set waktu ujian (contoh: 60 menit = 3600 detik)
+            let sisaDetik = 3600; 
+            
+            waktuUjian = setInterval(function() {
+                let menit = Math.floor(sisaDetik / 60);
+                let detik = sisaDetik % 60;
+                document.getElementById('timer').innerText = 
+                    (menit < 10 ? "0" + menit : menit) + ":" + (detik < 10 ? "0" + detik : detik);
+                
+                if (sisaDetik <= 0) {
+                    clearInterval(waktuUjian);
+                    alert("WAKTU HABIS! Jawaban Anda otomatis tersimpan.");
+                    simpanJawaban();
+                }
+                sisaDetik--;
+            }, 1000);
+        }
+
+        // 7. Sistem Anti-Curang
+        // Cegah Klik Kanan (Mencegah Inspect / Simpan Gambar)
+        document.addEventListener('contextmenu', event => {
+            if(statusUjianAktif) {
+                event.preventDefault();
+                bunyiPeringatan();
+                alert("Peringatan! Tidak boleh menggunakan klik kanan / menyalin soal.");
+            }
+        });
+
+        // Deteksi Keluar Tab/Browser (Mencegah Buka Google/Rekam Layar)
+        window.addEventListener('blur', () => {
+            if(statusUjianAktif) {
+                bunyiPeringatan();
+                alert("PELANGGARAN TERDETEKSI! Anda keluar dari halaman ujian (Pindah Tab / Ke Home). Aktivitas direkam sistem!");
+            }
+        });
+
+        // Bunyi Sirine/Peringatan menggunakan Web Speech API 
+        // (Agar tidak butuh file audio eksternal)
+        function bunyiPeringatan() {
+            let ucapan = new SpeechSynthesisUtterance("Peringatan! Anda terdeteksi melakukan kecurangan.");
+            ucapan.lang = 'id-ID';
+            ucapan.pitch = 1.5;
+            ucapan.rate = 1.2;
+            window.speechSynthesis.speak(ucapan);
+        }
+
+        // 8. Simpan Jawaban & Laporan Otomatis (Penilaian)
+        function simpanJawaban() {
+            statusUjianAktif = false;
+            clearInterval(waktuUjian);
+            
+            document.getElementById('ujian-active-area').style.display = 'none';
+            document.getElementById('laporan-area').style.display = 'block';
+
+            // Simulasi Koreksi Otomatis (Anggap 4 Soal, masing-masing bernilai 25, total 100)
+            // Di sistem nyata ini diproses berdasarkan jawaban benar di database.
+            // Untuk preview, kita acak saja hasil benarnya atau berdasarkan input.
+            let benar = 0;
+            let salah = 0;
+
+            // Cek jika siswa mengisi (Simulasi dummy)
+            const form = document.getElementById('form-ujian');
+            const data = new FormData(form);
+            
+            // Logika simulasi (anggap semua yang diisi nilainya akan diproses)
+            for(let i=1; i<=4; i++) {
+                if(data.get('soal'+i) !== null && data.get('soal'+i).trim() !== "") {
+                    benar++; // Simulasi: kalau diisi dianggap benar untuk contoh laporan
+                } else {
+                    salah++; // Kalau kosong salah
+                }
+            }
+
+            let nilai = benar * 25; // 4 soal x 25 = 100
+
+            document.getElementById('jawaban-benar').innerText = benar;
+            document.getElementById('jawaban-salah').innerText = salah;
+            document.getElementById('nilai-akhir').innerText = nilai;
+        }
+
+    </script>
+</body>
+</html>
